@@ -5,10 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,13 +37,25 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
+                    val offsetDivider = 2
                     NavHost(navController = navController, startDestination = "a",
                         exitTransition = {
-                            fadeOut()
+                            // smooth
+//                            ExitTransition.None
+
+                            // lag
+//                            fadeOut()
+
+                            // lag
+                            slideOutOfContainer(
+                                towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                                targetOffset = { it / 2 })
                         }, enterTransition = {
-                            slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start)
+                            slideIntoContainer(
+                                towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                                initialOffset = { it / 2 })
                         }, popExitTransition = {
-                            slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.End)
+                            ExitTransition.None
                         }, popEnterTransition = {
                             EnterTransition.None
                         }
@@ -51,7 +68,7 @@ class MainActivity : ComponentActivity() {
                                         popUpTo("a")
                                         launchSingleTop = true
                                     }
-                                }) {
+                                }, modifier = Modifier.fillMaxWidth()) {
                                     Text("b")
                                 }
                                 Button({
@@ -59,13 +76,60 @@ class MainActivity : ComponentActivity() {
                                         popUpTo("a")
                                         launchSingleTop = true
                                     }
-                                }) {
+                                }, modifier = Modifier.fillMaxWidth()) {
                                     Text("c")
                                 }
+
+                                Row(modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        navController.navigate("b")
+                                    }) {
+                                    Text("b")
+                                }
+                                IconButton(onClick = {
+                                    navController.navigate("b")
+                                }) {
+                                    Text("b")
+                                }
+
                             }
                         }
                         composable("b") {
-                            Surface(color = Color.Blue) {
+                            Surface(color = Color.White) {
+                                Column {
+                                    Text(
+                                        "ABC",
+                                        style = MaterialTheme.typography.headlineLarge
+                                    )
+                                    Text(
+                                        "ABC",
+                                        style = MaterialTheme.typography.headlineLarge,
+                                        color = Color.White,
+                                        modifier = Modifier.background(color = Color.Black)
+                                    )
+                                    Text(
+                                        "ABC",
+                                        style = MaterialTheme.typography.headlineLarge
+                                    )
+                                    Text(
+                                        "ABC",
+                                        style = MaterialTheme.typography.headlineLarge,
+                                        color = Color.White,
+                                        modifier = Modifier.background(color = Color.Black)
+                                    )
+                                    Text(
+                                        "ABC",
+                                        style = MaterialTheme.typography.headlineLarge
+                                    )
+                                    Text(
+                                        "ABC",
+                                        style = MaterialTheme.typography.headlineLarge,
+                                        color = Color.White,
+                                        modifier = Modifier.background(color = Color.Black)
+                                    )
+                                }
+
                             }
                         }
                         composable("c") {
